@@ -19,6 +19,14 @@ def calculate_placement_point(x_clic, y_clic, pas, marge=15):
     else:
         return None
 
+def compter_direction(x, y, dx, dy, couleur):
+    compte = 0
+    nx, ny = x + dx, y + dy
+    while 0 <= nx <= n and 0 <= ny <= n and grille[nx][ny] == couleur:
+        compte += 1
+        nx += dx
+        ny += dy
+    return compte, nx - dx, ny - dy
 
 def manage_click(event):
     print(f"CLICK DÉTECTÉ : x={event.x}, y={event.y}")
@@ -40,7 +48,38 @@ def manage_click(event):
             
             
             grille[hx][hy] = joueur_actuel
-            joueur_actuel = 3 - joueur_actuel
+            
+            
+            nb_g, x_deb, _ = compter_direction(hx, hy, -1, 0, joueur_actuel)
+            nb_d, x_fin, _ = compter_direction(hx, hy, 1, 0, joueur_actuel)
+            
+            
+            nb_h, _, y_deb = compter_direction(hx, hy, 0, -1, joueur_actuel)
+            nb_b, _, y_fin = compter_direction(hx, hy, 0, 1, joueur_actuel)
+
+            nb_hg, _, _ = compter_direction(hx, hy, -1, -1, joueur_actuel) # Haut-Gauche
+            nb_bd, _, _ = compter_direction(hx, hy, 1, 1, joueur_actuel)   # Bas-Droite
+
+            if (nb_hg + nb_bd + 1) >= 5:
+                messagebox.showinfo("Gagné !", "Victoire en diagonale (\) !")
+
+            nb_bg, _, _ = compter_direction(hx, hy, -1, 1, joueur_actuel)  # Bas-Gauche
+            nb_hd, _, _ = compter_direction(hx, hy, 1, -1, joueur_actuel)  # Haut-Droite
+
+        if (nb_bg + nb_hd + 1) >= 5:
+                messagebox.showinfo("Gagné !", "Victoire en diagonale (/) !")
+        if (nb_g + nb_d + 1) >= 5:
+                canvas_grille.create_line(x_deb * pas, hy * pas, x_fin * pas, hy * pas, fill="#00ccff", width=5)
+                messagebox.showinfo("Gagné !", f"Joueur {joueur_actuel} gagne (H) !")
+            
+            # Vérification Vertical
+        if (nb_h + nb_b + 1) >= 5:
+                canvas_grille.create_line(hx * pas, y_deb * pas, hx * pas, y_fin * pas, fill="#00ccff", width=5)
+                messagebox.showinfo("Gagné !", f"Joueur {joueur_actuel} gagne (V) !")
+
+        joueur_actuel = 3 - joueur_actuel
+    
+    
 def configure_button(form_elements, root):
 
     def action_clic():
@@ -67,3 +106,15 @@ def configure_button(form_elements, root):
             messagebox.showerror("Erreur", "La taille de la grille doit être un nombre !")
 
     form_elements["btn_confirm"].config(command=action_clic)
+    
+    
+def verifier_alignement(x, y, couleur_joueur, dx, dy):
+    """Compte les pions identiques dans une direction donnée (dx, dy)"""
+    compte = 0
+    nx, ny = x + dx, y + dy
+    
+    while 0 <= nx <= n and 0 <= ny <= n and grille[nx][ny] == couleur_joueur:
+        compte += 1
+        nx += dx
+        ny += dy
+    return compte, nx - dx, ny - dy
