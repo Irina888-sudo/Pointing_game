@@ -22,44 +22,25 @@ def calculate_placement_point(x_clic, y_clic, pas, marge=15):
 
 def manage_click(event):
     print(f"CLICK DÉTECTÉ : x={event.x}, y={event.y}")
-
-
-# def configure_button(form_elements, root):
     
-#     def action_clic():
-#         global grille, joueur_actuel, n, canvas_grille
-#         try:
-#             nom1 = form_elements["entry_name1"].get()
-#             nom2 = form_elements["entry_name2"].get()
-#             n = int(form_elements["entry_grids"].get())
-#             joueur_actuel = 1
-#             grille = [[0 for _ in range(n + 1)] for _ in range(n + 1)]
+    global grille, n, canvas_grille, joueur_actuel
+    r = 5
+    pas = 400 / n
+    resultat = calculate_placement_point(event.x, event.y, pas)
 
-#             if n < 9:
-#                 messagebox.showwarning("Trop petit !", "La grille doit faire au moins 9.")
-#                 return
-
-#             for widget in root.winfo_children():
-#                 widget.destroy()
-
-#             canvas_canon = tk.Canvas(root, width=100, height=500, bg="grey")
-#             canvas_canon.pack(side="left")
-
-#             canvas_grille = tk.Canvas(root, width=500, height=500, bg="white")
-#             canvas_grille.pack(side="right", expand=True)
-
-#             # ✅ On bind le clic AVANT d'appeler create_game_window
-#             canvas_grille.bind("<Button-1>", manage_click)
-
-#             # ✅ On passe canvas_grille à create_game_window pour qu'elle
-#             #    dessine sur CE canvas et ne le recrée pas
-#             create_game_window(n, root, canvas_grille)
-
-#         except ValueError:
-#             messagebox.showerror("Erreur", "La taille de la grille doit être un nombre !")
-
-#     form_elements["btn_confirm"].config(command=action_clic)
-
+    if resultat is not None:
+        hx, hy = resultat
+       
+        if 0 <= hx <= n and 0 <= hy <= n and grille[hx][hy] == 0:
+            x_inter, y_inter = hx * pas, hy * pas
+            couleur = "blue" if joueur_actuel == 1 else "red"
+            
+          
+            canvas_grille.create_oval(x_inter-r, y_inter-r, x_inter+r, y_inter+r, fill=couleur)
+            
+            
+            grille[hx][hy] = joueur_actuel
+            joueur_actuel = 3 - joueur_actuel
 def configure_button(form_elements, root):
 
     def action_clic():
@@ -72,13 +53,14 @@ def configure_button(form_elements, root):
             grille = [[0 for _ in range(n + 1)] for _ in range(n + 1)]
 
             if n < 9:
+                
                 messagebox.showwarning("Trop petit !", "La grille doit faire au moins 9.")
                 return
 
-            # ✅ On récupère le canvas_grille retourné par create_game_window
+           
             canvas_grille = create_game_window(n, root)
 
-            # ✅ On binde le clic sur le bon canvas
+           
             canvas_grille.bind("<Button-1>", manage_click)
 
         except ValueError:
