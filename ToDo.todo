@@ -1,0 +1,17 @@
+I-  creer un fenetre de configuratiion de table : 9*9 ce sera toujours divisible par 3
+- Creer la table de jeu
+
+II-Joueur
+- Créer un joueur 1 et un joueur 2
+
+III- Point
+- Créer une classe Point qui contient les coordonnées x et y
+- Créer une méthode pour vérifier si un point est valide (dans les limites de la grille)
+
+    Calculer resultat avec calculer_placement_point.
+    Si resultat n'est pas None, extraire indice_x et indice_y.
+    Vérifier si l'indice est dans les limites ET si la case est vide.
+    Calculer les pixels du centre ($x_{inter}, y_{inter}$).
+    Calculer les 4 coordonnées ($x_1, y_1, x_2, y_2$) avec le rayon $r$.
+    Dessiner l'ovale avec la bonne couleur.
+    Mettre à jour la grille et changer de joueur.                 
