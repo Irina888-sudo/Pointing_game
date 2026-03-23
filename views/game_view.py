@@ -18,13 +18,19 @@ def create_game_window(n, root):
     frame_canon = tk.Frame(main_frame, bg="#060A3F", width=100, height=400)
     frame_canon.pack(side="left", padx=40, pady=40)
 
+    label_score_j1 = tk.Label(frame_canon, text="J1 : 0", fg="blue", bg="#FFFFFF", font=("Arial", 14))
+    label_score_j1.pack(pady=10)
+
+    label_score_j2 = tk.Label(frame_canon, text="J2 : 0", fg="red", bg="#FFFFFF", font=("Arial", 14))
+    label_score_j2.pack(pady=10)
+    
     
     canvas_grille = tk.Canvas(main_frame, width=400, height=400, bg="white", highlightthickness=2, highlightbackground="#00ccff")
     canvas_grille.pack(side="left", padx=20)
     
     
     draw_grid(canvas_grille, n, 400)
-    return canvas_grille
+    return canvas_grille,label_score_j1, label_score_j2 
 
 def draw_grid(canvas, n, total_size):
     pas = total_size / n

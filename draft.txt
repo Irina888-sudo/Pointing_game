@@ -5,5 +5,4 @@ L'Anticipation des Erreurs :
  Ne te contente pas d'un code qui marche. Demande : "Qu'est-ce qui pourrait faire planter ce code ?". C'est ce qui rend ton travail robuste pour du Remote.
 
 La Refactorisation :
- Une fois que ton code fonctionne, demande : "Comment rendre ce code plus élégant ou plus performant ?".
- 
+Une fois que ton code fonctionne, demande : "Comment rendre ce code plus élégant ou plus performant ?".

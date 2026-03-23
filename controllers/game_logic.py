@@ -29,61 +29,61 @@ def compter_direction(x, y, dx, dy, couleur):
     return compte, nx - dx, ny - dy
 
 def manage_click(event):
-    print(f"CLICK DÉTECTÉ : x={event.x}, y={event.y}")
-    
-    global grille, n, canvas_grille, joueur_actuel
-    r = 5
+    global grille, n, canvas_grille, joueur_actuel, score_j1, score_j2, label_score_j1, label_score_j2
     pas = 400 / n
     resultat = calculate_placement_point(event.x, event.y, pas)
 
-    if resultat is not None:
-        hx, hy = resultat
-       
-        if 0 <= hx <= n and 0 <= hy <= n and grille[hx][hy] == 0:
-            x_inter, y_inter = hx * pas, hy * pas
-            couleur = "blue" if joueur_actuel == 1 else "red"
-            
-          
-            canvas_grille.create_oval(x_inter-r, y_inter-r, x_inter+r, y_inter+r, fill=couleur)
-            
-            
-            grille[hx][hy] = joueur_actuel
-            
-            
-            nb_g, x_deb, _ = compter_direction(hx, hy, -1, 0, joueur_actuel)
-            nb_d, x_fin, _ = compter_direction(hx, hy, 1, 0, joueur_actuel)
-            
-            
-            nb_h, _, y_deb = compter_direction(hx, hy, 0, -1, joueur_actuel)
-            nb_b, _, y_fin = compter_direction(hx, hy, 0, 1, joueur_actuel)
+    if resultat is None:
+        return
 
-            nb_hg, _, _ = compter_direction(hx, hy, -1, -1, joueur_actuel) # Haut-Gauche
-            nb_bd, _, _ = compter_direction(hx, hy, 1, 1, joueur_actuel)   # Bas-Droite
-
-            if (nb_hg + nb_bd + 1) >= 5:
-                messagebox.showinfo("Gagné !", "Victoire en diagonale (\) !")
-
-            nb_bg, _, _ = compter_direction(hx, hy, -1, 1, joueur_actuel)  # Bas-Gauche
-            nb_hd, _, _ = compter_direction(hx, hy, 1, -1, joueur_actuel)  # Haut-Droite
-
-        if (nb_bg + nb_hd + 1) >= 5:
-                messagebox.showinfo("Gagné !", "Victoire en diagonale (/) !")
-        if (nb_g + nb_d + 1) >= 5:
-                canvas_grille.create_line(x_deb * pas, hy * pas, x_fin * pas, hy * pas, fill="#00ccff", width=5)
-                messagebox.showinfo("Gagné !", f"Joueur {joueur_actuel} gagne (H) !")
-            
-            # Vérification Vertical
-        if (nb_h + nb_b + 1) >= 5:
-                canvas_grille.create_line(hx * pas, y_deb * pas, hx * pas, y_fin * pas, fill="#00ccff", width=5)
-                messagebox.showinfo("Gagné !", f"Joueur {joueur_actuel} gagne (V) !")
-
-        joueur_actuel = 3 - joueur_actuel
+    hx, hy = resultat
     
+    if 0 <= hx <= n and 0 <= hy <= n and grille[hx][hy] == 0:
+        # 1. Placement du pion
+        couleur = "blue" if joueur_actuel == 1 else "red"
+        r = 5
+        canvas_grille.create_oval(hx*pas-r, hy*pas-r, hx*pas+r, hy*pas+r, fill=couleur)
+        grille[hx][hy] = joueur_actuel
+
+        # 2. Liste des directions
+        directions = [
+            (1, 0),  # Horizontal
+            (0, 1),  # Vertical
+            (1, 1),  # Diagonale \
+            (1, -1)  # Diagonale /
+        ]
+
+        win_found = False
+        for dx, dy in directions:
+           
+            nb1, x1, y1 = compter_direction(hx, hy, dx, dy, joueur_actuel)
+            nb2, x2, y2 = compter_direction(hx, hy, -dx, -dy, joueur_actuel)
+
+            if (nb1 + nb2 + 1) == 5:
+               
+                canvas_grille.create_line(x1*pas, y1*pas, x2*pas, y2*pas, fill="#00ccff", width=5)
+                
+                
+                if joueur_actuel == 1: score_j1 += 1
+                else: score_j2 += 1
+                win_found = True
+
+       
+        if win_found:
+            label_score_j1.config(text=f"J1 : {score_j1}")
+            label_score_j2.config(text=f"J2 : {score_j2}")
+            messagebox.showinfo("Gagné !", f"Joueur {joueur_actuel} marque un point !")
+        
+        else:
+         joueur_actuel = 3 - joueur_actuel
     
 def configure_button(form_elements, root):
 
     def action_clic():
-        global grille, joueur_actuel, n, canvas_grille
+        global grille, joueur_actuel, n, canvas_grille, score_j1, score_j2, label_score_j1, label_score_j2
+        
+        score_j1 = 0
+        score_j2 = 0
         try:
             nom1 = form_elements["entry_name1"].get()
             nom2 = form_elements["entry_name2"].get()
@@ -97,9 +97,8 @@ def configure_button(form_elements, root):
                 return
 
            
-            canvas_grille = create_game_window(n, root)
+            canvas_grille, label_score_j1, label_score_j2 = create_game_window(n, root)
 
-           
             canvas_grille.bind("<Button-1>", manage_click)
 
         except ValueError:
