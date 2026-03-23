@@ -3,6 +3,7 @@ import tkinter as tk
 from views.setup_view import create_form
 from controllers.game_logic import configure_button
 
+
 def start_app():
     root = tk.Tk()
     root.title("Game configuration")
