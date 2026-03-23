@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from models.database import sauvegarder_partie
 from views.game_view import create_game_window, draw_grid
 from tkinter import messagebox
 from views.game_view import draw_canon
@@ -92,7 +93,8 @@ def configure_button(form_elements, root):
     def action_clic():
         global grille, joueur_actuel, n, canvas_grille, canvas_canon
         global score_j1, score_j2, label_score_j1, label_score_j2,label_tour
-
+        global nom1, nom2
+        
         score_j1 = 0
         score_j2 = 0
         try:
@@ -174,7 +176,7 @@ def bind_canon(root, canvas_grille):
 
 
 def terminer_partie():
-    global score_j1, score_j2
+    global score_j1, score_j2,nom1, nom2
 
     if score_j1 > score_j2:
         gagnant = f"Joueur 1 gagne avec {score_j1} point(s) !"
@@ -182,5 +184,5 @@ def terminer_partie():
         gagnant = f"Joueur 2 gagne avec {score_j2} point(s) !"
     else:
         gagnant = f"Égalité ! Les deux joueurs ont {score_j1} point(s)."
-
+    sauvegarder_partie(nom1, nom2, score_j1, score_j2)
     messagebox.showinfo("Fin de partie", gagnant)
