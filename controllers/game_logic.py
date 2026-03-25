@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from models import config
-from models.database import sauvegarder_partie
+from models.database import mettre_a_jour_partie, sauvegarder_partie
 from views.game_view import create_game_window, draw_grid
 from tkinter import messagebox
 from views.game_view import draw_canon
@@ -82,18 +82,6 @@ def manage_click(event, config):
         nom_actuel = config.j1 if config.joueur_actuel == 1 else config.j2
         config.label_tour.config(text=f"Tour : {nom_actuel}")
     
-    
-def verifier_alignement(x, y, couleur_joueur, dx, dy):
-    """Compte les pions identiques dans une direction donnée (dx, dy)"""
-    compte = 0
-    nx, ny = x + dx, y + dy
-    
-    while 0 <= nx <= n and 0 <= ny <= n and grille[nx][ny] == couleur_joueur:
-        compte += 1
-        nx += dx
-        ny += dy
-    return compte, nx - dx, ny - dy
-
 
 
 def move_canon(event, config):
@@ -131,14 +119,7 @@ def fire_canon(puissance, config):
     config.joueur_actuel = 3 - config.joueur_actuel
     config.label_tour.config(text=f"Tour : {config.j2 if config.joueur_actuel == 2 else config.j1}")
         
-        
-def bind_canon(root, canvas_grille):
-    """Bind la souris sur la grille et Ctrl+1~9"""
     
-    canvas_grille.bind("<Motion>", move_canon)
-
-    for i in range(1, 10):
-        root.bind(f"<Control-Key-{i}>", lambda e, p=i: fire_canon(p))
 
 
 def terminer_partie(config):
@@ -151,6 +132,54 @@ def terminer_partie(config):
         gagnant_msg = f"{n2} gagne avec {s2} point(s) !"
     else:
         gagnant_msg = f"Égalité ! ({s1} partout)"
-    
-    sauvegarder_partie(n1, n2, s1, s2)
+
+    if config.partie_id is not None:
+        mettre_a_jour_partie(config)  
+    else:
+        sauvegarder_partie(config)    
+
     messagebox.showinfo("Fin de partie", gagnant_msg)
+def restaurer_visuel_grille(config):
+    """Parcourt la config.grille et dessine les pions correspondants"""
+    pas = 400 / config.n
+    r = 5 
+    
+    for x in range(config.n + 1):
+        for y in range(config.n + 1):
+            valeur = config.grille[x][y]
+            if valeur != 0:
+               
+                px = x * pas
+                py = y * pas
+                couleur = "blue" if valeur == 1 else "red"
+                
+               
+                config.canvas.create_oval(px-r, py-r, px+r, py+r, fill=couleur)
+        
+def charger_partie_selectionnee(donnees_mongo, root, config_actuelle):
+ 
+    config_actuelle.n = donnees_mongo['n']
+    config_actuelle.grille = donnees_mongo['grille']
+    config_actuelle.joueur_actuel = donnees_mongo['joueur_actuel']
+    config_actuelle.j1 = donnees_mongo['joueur1']
+    config_actuelle.j2 = donnees_mongo['joueur2']
+    config_actuelle.score_j1 = donnees_mongo.get('score_j1', 0)
+    config_actuelle.score_j2 = donnees_mongo.get('score_j2', 0)
+    config_actuelle.partie_id = donnees_mongo['_id']
+    
+    from views.game_view import create_game_window
+    def finir():
+        terminer_partie(config_actuelle)
+        root.destroy()
+    
+    create_game_window(root, config_actuelle, finir)
+
+
+    restaurer_visuel_grille(config_actuelle)
+    config_actuelle.canvas.bind("<Button-1>", lambda e: manage_click(e, config_actuelle))
+    
+    config_actuelle.canvas.bind("<Motion>", lambda e: move_canon(e, config_actuelle))
+
+    for i in range(1, 10):
+        root.bind(f"<Control-Key-{i}>", lambda e, p=i: fire_canon(p, config_actuelle))
+    

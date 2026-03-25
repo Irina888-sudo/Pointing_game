@@ -1,8 +1,8 @@
 import tkinter as tk
-
+from models.database import get_historique
 
 def create_game_window(root, config, terminer_callback):
-    
+    from controllers.game_logic import charger_partie_selectionnee
     for widget in root.winfo_children():
         widget.destroy()
 
@@ -35,12 +35,17 @@ def create_game_window(root, config, terminer_callback):
     
     draw_grid(config.canvas, config.n, 400)
     
-    # 4. Bouton Terminer
-    btn_terminer = tk.Button(main_frame, text="Terminer", font=("Arial", 12), bg="#46f124", fg="black", command=terminer_callback)
+    
+    btn_terminer = tk.Button(main_frame, text="Terminer", command=terminer_callback)
     btn_terminer.pack(side="bottom", pady=10)
     
    
-
+    btn_history = tk.Button(
+        main_frame, 
+        text="Historique", 
+        command=lambda: show_history_window(root, lambda p: charger_partie_selectionnee(p, root, config))
+    )
+    btn_history.pack(side="bottom", pady=5)
 
 def draw_canon(canvas_canon, y_pixel):
     """Dessine le canon centré sur y_pixel"""
@@ -60,3 +65,32 @@ def draw_grid(canvas, n, total_size):
     for i in range(n + 1):
         canvas.create_line(0, i * pas, total_size, i * pas, fill="black")
         canvas.create_line(i * pas, 0, i * pas, total_size, fill="black")
+        
+    
+
+def show_history_window(root, on_load_callback):
+    history_win = tk.Toplevel(root)
+    history_win.title("Historique des parties")
+    history_win.geometry("400x400")
+
+    listbox = tk.Listbox(history_win, font=("Arial", 10))
+    listbox.pack(fill="both", expand=True, padx=10, pady=10)
+
+    parties = get_historique()
+    for p in parties:
+        n_taille = p.get('n', 'Inconnue')
+        label = f"{p['date']} : {p['joueur1']} vs {p['joueur2']} (Taille: {n_taille})"
+        listbox.insert(tk.END, label)
+    
+    def selectionner():
+        index = listbox.curselection()
+        if index:
+            partie_choisie = parties[index[0]]
+            history_win.destroy()
+            on_load_callback(partie_choisie)
+    
+    btn_load = tk.Button(history_win, text="Reprendre", command=selectionner)
+    btn_load.pack(pady=10)
+    
+    
+            

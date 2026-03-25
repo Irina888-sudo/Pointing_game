@@ -14,4 +14,5 @@ class GameConfig:
         self.label_score_j2 = None
         self.label_tour = None
         self.canvas = None
+        self.partie_id = None
         

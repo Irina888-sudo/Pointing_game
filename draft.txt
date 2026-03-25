@@ -13,3 +13,47 @@ MONGO------------------
 mongo
 use pointing_game
 db.parties.find()
+
+
+------design
+
+2. Comment te démarquer (Mes 3 pistes prioritaires)
+Si tu veux que ton projet "claque" visuellement, voici où tu devrais concentrer tes efforts :
+
+A. Le "Game Feel" (Animations)
+Actuellement, ton pion apparaît instantanément. Un expert ajouterait du mouvement :
+
+Animation de chute : Le pion tombe du haut de l'écran avant de se fixer sur l'intersection.
+
+Effet de survol (Hover) : Quand la souris passe sur une intersection, un pion semi-transparent apparaît pour montrer où l'on va cliquer.
+
+Secousse d'écran : Quand une ligne de 5 est complétée, le Canvas tremble légèrement.
+
+B. Le Thème "Cyber-Punk" ou "Néon"
+Puisque tu as déjà un fond sombre (#1a1a1a) et des lignes bleues (#00ccff), pousse le concept à fond :
+
+Remplace les lignes noires de la grille par des lignes gris foncé très fines.
+
+Ajoute un effet "Glow" (halo) autour du dernier pion joué.
+
+Utilise une police de caractères typée "Tech" ou "Retro-gaming".
+
+C. L'Interface "HUD" (Heads-Up Display)
+Au lieu de simples Labels Tkinter gris, crée un véritable tableau de bord :
+
+Des barres de progression qui se vident pour le temps de réflexion.
+
+Un historique des coups défilant sur le côté.
+
+Des avatars pour les joueurs (même des icônes simples).
+
+3. Mes questions pour t'aider à choisir
+Pour que je puisse te guider sur le code, j'ai besoin de savoir quel est ton style :
+
+L'esthétique : Préfères-tu un style minimaliste/moderne (Apple, épuré) ou un style typé Jeu Vidéo (Néons, animations, particules) ?
+
+Le Canon : Veux-tu qu'il reste sur le côté ou aimerais-tu qu'il soit un élément central du design (par exemple, un viseur qui suit la souris) ?
+
+L'Interaction : Aimerais-tu ajouter un système de Timer (ex: 10 secondes pour jouer) pour ajouter de la tension au jeu ?
+
+Quelle piste t'excite le plus ? Une fois que tu auras choisi, je te montrerai comment coder l'effet visuel correspondant. 🤔

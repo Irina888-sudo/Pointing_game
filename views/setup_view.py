@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from models.config import GameConfig 
+from views.game_view import show_history_window
 
 def create_form(main_window, on_submit_callback):
     main_window.title("Game configuration")
@@ -50,13 +51,25 @@ def create_form(main_window, on_submit_callback):
         except ValueError as e:
             messagebox.showerror("Erreur", f"Entrée invalide : {e}")
 
-    # --- LE BOUTON ---
-    btn_confirm = ttk.Button(
-        frame_champs,
-        text="Play",
-        width=20,
-        command=valider 
-    )
+  
+    btn_confirm = ttk.Button(frame_champs, text="Play", width=20, command=valider)
     btn_confirm.grid(row=3, column=0, columnspan=2, pady=25)
 
-   
+
+    btn_history = ttk.Button(frame_champs, text="Historique", width=20,
+                              command=lambda: _ouvrir_historique(main_window, on_submit_callback))
+    btn_history.grid(row=4, column=0, columnspan=2, pady=5)
+
+
+
+def _ouvrir_historique(root, on_submit_callback):
+    from views.game_view import show_history_window
+    from controllers.game_logic import charger_partie_selectionnee
+    from models.config import GameConfig
+
+    def charger(partie):
+        config = GameConfig(partie['joueur1'], partie['joueur2'], partie['n'])
+        on_submit_callback(config)
+        charger_partie_selectionnee(partie, root, config)
+
+    show_history_window(root, charger)
