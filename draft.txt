@@ -55,3 +55,12 @@ Bouton Historique sur la fenêtre de jeu ET sur la configuration
 Lignes jade sauvegardées et restaurées à la reprise
 
 Je te joins tous les fichiers, continue le développement à partir de là."
+
+
+
+
+
+Voila le processus suivant avec mon plan de code, mais avant tout ca si vous avez des questions vous pouvez me les poser.
+But : obtenir 2 point si on trace avec un point deja tracer.
+Mon plan : Creer un fonction qui s'appelle "already_use" pour savoir si le point est deja tracer 
+           -Sur l'action de click qu on le point s'aligne de 4 ou 5 , on passe la fonction "already_use" si elle est true le joueur marque 2 points si elle est false le joueur marque 1 point

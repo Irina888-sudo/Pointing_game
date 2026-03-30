@@ -62,12 +62,15 @@ def manage_click(event, config):
             nb2, x2, y2 = compter_direction(hx, hy, -dx, -dy, config)
 
             if (nb1 + nb2 + 1) == seuil:
+                points = 2 if already_use(config, x1, y1, x2, y2) else 1
                 config.alignements.append((x1, y1, x2, y2))
                 config.canvas.create_line(x1*pas, y1*pas, x2*pas, y2*pas, fill="#00ccff", width=5)
+
                 if config.joueur_actuel == 1:
-                    config.score_j1 += 1
+                    config.score_j1 += points
                 else:
-                    config.score_j2 += 1
+                    config.score_j2 += points
+
                 win_found = True
 
         if win_found:
@@ -168,3 +171,29 @@ def charger_partie_selectionnee(donnees_mongo, root, config_actuelle):
 
     for i in range(1, 10):
         root.bind(f"<Control-Key-{i}>", lambda e, p=i: fire_canon(p, config_actuelle))
+        
+        
+def segments_se_chevauchent(x1, y1, x2, y2, ax1, ay1, ax2, ay2):
+    for px, py in points_du_segment(x1, y1, x2, y2):
+        if min(ax1, ax2) <= px <= max(ax1, ax2) and min(ay1, ay2) <= py <= max(ay1, ay2):
+            return True
+    return False
+
+def points_du_segment(x1, y1, x2, y2):
+    points = []
+    dx = x2 - x1
+    dy = y2 - y1
+    steps = max(abs(dx), abs(dy))
+    if steps == 0:
+        return [(x1, y1)]
+    for i in range(steps + 1):
+        px = round(x1 + i * dx / steps)
+        py = round(y1 + i * dy / steps)
+        points.append((px, py))
+    return points       
+
+def already_use(config, x1, y1, x2, y2):
+    for (ax1, ay1, ax2, ay2) in config.alignements:
+        if segments_se_chevauchent(x1, y1, x2, y2, ax1, ay1, ax2, ay2):
+            return True
+    return False
