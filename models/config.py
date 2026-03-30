@@ -15,4 +15,5 @@ class GameConfig:
         self.label_tour = None
         self.canvas = None
         self.partie_id = None
+        self.alignements = []  
         

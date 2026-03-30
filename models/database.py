@@ -28,7 +28,8 @@ def sauvegarder_partie(config):
             "n": config.n,             
             "grille": config.grille,  
             "joueur_actuel": config.joueur_actuel,
-            "gagnant": gagnant
+            "gagnant": gagnant,
+            "alignements": config.alignements
         })
     except Exception as e:
         print(f"Erreur DB : {e}")

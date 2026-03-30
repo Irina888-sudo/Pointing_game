@@ -17,43 +17,41 @@ db.parties.find()
 
 ------design
 
-2. Comment te démarquer (Mes 3 pistes prioritaires)
-Si tu veux que ton projet "claque" visuellement, voici où tu devrais concentrer tes efforts :
+Je développe un jeu de Gomoku en Python appelé "Pointing Game". Voici le contexte complet :
+Règles du jeu :
 
-A. Le "Game Feel" (Animations)
-Actuellement, ton pion apparaît instantanément. Un expert ajouterait du mouvement :
+2 joueurs placent des pions (bleu = J1, rouge = J2) sur une grille n×n (min 5, max 30)
+Gagner = aligner exactement 5 pions (pas 6+) horizontalement, verticalement ou en diagonale
+Exception : si un joueur a 10 pions ou plus sur la grille, le seuil devient 4
+Chaque victoire = 1 point, le jeu est infini jusqu'au bouton "Terminer"
 
-Animation de chute : Le pion tombe du haut de l'écran avant de se fixer sur l'intersection.
+Mécaniques spéciales :
 
-Effet de survol (Hover) : Quand la souris passe sur une intersection, un pion semi-transparent apparaît pour montrer où l'on va cliquer.
+Un canon à gauche suit la souris sur l'axe Y
+Ctrl + 1~9 tire sur une colonne X (règle de 3 selon n) et détruit le premier pion adverse sur la ligne Y du canon
+Le tir passe automatiquement au joueur suivant
 
-Secousse d'écran : Quand une ligne de 5 est complétée, le Canvas tremble légèrement.
+Stack technique :
 
-B. Le Thème "Cyber-Punk" ou "Néon"
-Puisque tu as déjà un fond sombre (#1a1a1a) et des lignes bleues (#00ccff), pousse le concept à fond :
+Python + Tkinter pour l'interface
+MongoDB (localhost:27017, base pointing_game, collection parties)
+Structure MVC :
 
-Remplace les lignes noires de la grille par des lignes gris foncé très fines.
+controllers/game_logic.py — logique du jeu
+views/game_view.py — interface de jeu
+views/setup_view.py — formulaire de configuration
+models/config.py — classe GameConfig (objet partagé entre tous les modules)
+models/database.py — fonctions MongoDB
+main.py — point d'entrée
 
-Ajoute un effet "Glow" (halo) autour du dernier pion joué.
+Fonctionnalités déjà implémentées :
 
-Utilise une police de caractères typée "Tech" ou "Retro-gaming".
+Placement de pions et détection de victoire (seuil dynamique 4 ou 5)
+Score et label du joueur actuel
+Canon avec tir Ctrl+1~9
+Bouton Terminer → sauvegarde dans MongoDB
+Historique des parties avec reprise (update si reprise, insert si nouvelle)
+Bouton Historique sur la fenêtre de jeu ET sur la configuration
+Lignes jade sauvegardées et restaurées à la reprise
 
-C. L'Interface "HUD" (Heads-Up Display)
-Au lieu de simples Labels Tkinter gris, crée un véritable tableau de bord :
-
-Des barres de progression qui se vident pour le temps de réflexion.
-
-Un historique des coups défilant sur le côté.
-
-Des avatars pour les joueurs (même des icônes simples).
-
-3. Mes questions pour t'aider à choisir
-Pour que je puisse te guider sur le code, j'ai besoin de savoir quel est ton style :
-
-L'esthétique : Préfères-tu un style minimaliste/moderne (Apple, épuré) ou un style typé Jeu Vidéo (Néons, animations, particules) ?
-
-Le Canon : Veux-tu qu'il reste sur le côté ou aimerais-tu qu'il soit un élément central du design (par exemple, un viseur qui suit la souris) ?
-
-L'Interaction : Aimerais-tu ajouter un système de Timer (ex: 10 secondes pour jouer) pour ajouter de la tension au jeu ?
-
-Quelle piste t'excite le plus ? Une fois que tu auras choisi, je te montrerai comment coder l'effet visuel correspondant. 🤔
+Je te joins tous les fichiers, continue le développement à partir de là."

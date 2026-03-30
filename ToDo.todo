@@ -15,3 +15,14 @@ III- Point
     Calculer les 4 coordonnées ($x_1, y_1, x_2, y_2$) avec le rayon $r$.
     Dessiner l'ovale avec la bonne couleur.
     Mettre à jour la grille et changer de joueur.                 
+
+
+
+
+-Fonction : Compte point que le joueur a mis dans la grille
+if (count_point(joueur)== 10) {
+    on change cette condition  if (nb1 + nb2 + 1) >= 5: par if (nb1 + nb2 + 1) == 4:
+}
+
+
+Non def count_point(config) sert a compter les points que le joueur a mis dans la grille.  et au lieu de faire aligner 5 points on doit juste aligner 4
